@@ -88,7 +88,14 @@ trait messageTrait
         $nik = preg_grep('/[0-9]{5}/', $message);
         $nik = implode($nik);
         $nik = Str::of($nik)->replaceMatches("/nik\/rekam medis|ktp|nik|nomor ktp|no.ktp|no ktp|rekam medis|rm|\s|~|-|\./", '');
-        return $nik;
+
+        if (Str::of($message)->contains(["nik",'rekam medis','medis','no. rm','no rm','nomor rekam medis'])) {
+            return trim($nik, 'medis');
+
+        } else {
+            return $this->getWaTableData('rm');
+        }
+        
     }
 
 
@@ -125,15 +132,35 @@ trait messageTrait
             $dokter     = $containsSp == true ? Str::between($this->senderMessage(), "dokter", "sp") : Str::between($this->senderMessage(), "dokter", '~');
             $dokter     = Str::of($dokter)->replaceMatches('/tgl|berobat|\(|-/', '~');
             $dokter     = Str::before($dokter, '~');
-            $dokter     = Str::of($dokter)->replaceMatches('/tujuan|yang dituju|dokter tujuan|dokter|dr. |dr|doktor|-/', '');
+            $dokter     = Str::of($dokter)->replace(['tujuan','yang dituju','dokter tujuan','dokter','dr. ','doktor','-/','drg','drg.'], '');
             
             // return $dokter;
             $dokter = $this->keywordsNamaDokter($dokter);
 
-            return trim($dokter, ' ');
+            return ltrim(trim($dokter, ' '),'dr');
         } else {
             return $this->getWaTableData('dokter');
         }
+    }
+
+    public function getDokterFromMessage()
+    {
+        $isExist = Str::of($this->senderMessage())->contains('dokter');
+
+        if ($isExist == true) {
+
+            $containsSp = Str::of($this->senderMessage())->contains(["sp.", "sp"]);
+            $dokter     = $containsSp == true ? Str::between($this->senderMessage(), "dokter", "sp") : Str::between($this->senderMessage(), "dokter", '~');
+            $dokter     = Str::of($dokter)->replaceMatches('/tgl|berobat|\(|-/', '~');
+            $dokter     = Str::before($dokter, '~');
+            $dokter     = Str::of($dokter)->replace(['tujuan','yang dituju','dokter tujuan','dokter','dr. ','doktor','-/','drg','drg.'], '');
+            
+            // return $dokter;
+            // $dokter = $this->keywordsNamaDokter($dokter);
+
+            return ltrim(trim($dokter, ' '),'dr');
+        }
+        
     }
 
     // public function getDayFromMessage()

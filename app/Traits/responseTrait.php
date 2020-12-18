@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use App\Traits\questionsTrait;
 use App\Traits\messageValidatorTrait;
 use App\Traits\keywordsTrait;
+use Carbon\Carbon;
 
 trait responseTrait
 {
@@ -31,7 +32,7 @@ trait responseTrait
 
     public function responseMessage()
     {
-        $regIntent          = Str::of($this->senderMessage())->containsAll(['nama',  'lahir', 'dokter', 'poli']);
+        $regIntent          = Str::of($this->senderMessage())->containsAll(['nama', 'dokter', 'poli']);
         $regIntent2          = Str::of($this->senderMessage())->containsAll(['daftar', 'ke',]);
         $sayaMauDaftar      = Str::of($this->senderMessage())->containsAll(['mau', 'daftar']);
         $sayaInginDaftar      = Str::of($this->senderMessage())->containsAll(['ingin', 'daftar']);
@@ -40,23 +41,29 @@ trait responseTrait
 
         $jadwalIntent       = $pregjadwal > 1 ? Str::of($this->senderMessage())->contains([$pregjadwal, 'jadwal']) : Str::of($this->senderMessage())->contains('jadwal');
         $formDaftar         = $this->senderMessage() == 'daftar';
-        $lengkapiData       = Str::of($this->senderMessage())->contains(['mohon maaf data anda belum lengkap']);
+        // $lengkapiData       = Str::of($this->senderMessage())->contains(['mohon maaf data anda belum lengkap']);
         $groupName          = $this->getGroup()['name'];
         $pilih0             = trim($this->senderMessage(), ' ') == "0";
         $pilih1             = trim($this->senderMessage(), ' ') == "1";
         $pilih2             = trim($this->senderMessage(), ' ') == "2";
         $pilih3             = trim($this->senderMessage(), ' ') == "3";
         $hi                 = $this->senderMessage() == "hai" || $this->senderMessage() == "hi";
-        $thanks             = Str::of($this->senderMessage())->replace(["thx", 'terimakasih', 'terima kasih','makasi', 'trims', 'thank', 'thankyou', 'thank you'], 'terima kasih');
+        $tes                 = $this->senderMessage() == "tes" || $this->senderMessage() == "test";
+        $thanks             = Str::of($this->senderMessage())->replace(["thx", 'terimakasih', 'terima kasih', 'makasi', 'trims', 'thank', 'thankyou', 'thank you', 'tq'], 'terima kasih');
+
+        // return $this->getBirthDate();
+        // dd($this->getTglBerobat());
+        // dd($this->getDokterFromMessage());
 
         switch (true) {
 
             case $hi:
+            case $tes:
                 return [$this->reply('Selamat datang di RS. Ali Sibroh Malisi.'), $this->mainMenu()];
                 break;
 
             case $thanks == "terima kasih":
-                return "Terimakasih Kembali, semoga";
+                return "Terimakasih Kembali";
                 break;
 
             case $this->getWaTableData('questions') == "pilih poli":
@@ -91,7 +98,7 @@ trait responseTrait
             case $sayaMauDaftar:
             case $regIntent2:
                 return [
-                    "Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \n\nContoh: jadwal poli anak \".",
+                    "Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \" \n\nContoh: jadwal poli anak.",
                     "Jika sudah mengetahui jadwal dokter tujuan anda silahkan pilih:\n1.Pasien Lama\n2.Pasien Baru\n\nMohon balas dengan angka pilihan anda (1 atau 2)"
                 ];
             case $pilih0:
@@ -99,13 +106,13 @@ trait responseTrait
                 break;
             case $pilih1:
             case $formDaftar:
-                return ["Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli*", "Pendaftaran pasien lama silahkan *COPY PESAN INI* dan lengkapi form berikut:\n" . $this->formDaftar()];
+                return ["Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli*"."\n\nContoh: *jadwal poli anak*.", "Pendaftaran pasien lama silahkan *COPY PESAN INI* dan lengkapi form berikut:\n" . $this->formDaftar()];
                 break;
             case $jadwalIntent:
                 return $this->replyJadwal();
                 break;
             case $pilih2:
-                return ["Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \".", "--Pendaftaran pasien baru-- \n Silahkan *COPY PESAN INI* dan lengkapi formulir berikut:" .
+                return ["Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \". \n\nContoh: *jadwal poli anak*.", "--Pendaftaran pasien baru-- \n Silahkan *COPY PESAN INI* dan lengkapi formulir berikut:" .
                     "\n\n~ *NIK*:" .
                     "\n~ *Nama sesuai KTP*:" .
                     "\n~ *Tempat Lahir*:" .
@@ -121,10 +128,10 @@ trait responseTrait
                 return "Cek jadwal silahkan ketik: \" *jadwal <spasi> nama poli*\"";
                 break;
 
-            default:
-                if ($groupName !== "Botgrup") {
-                    return $this->defaultReply();
-                }
+                // default:
+                //     if ($groupName !== "Botgrup") {
+                //         return $this->defaultReply();
+                //     }
         }
 
 

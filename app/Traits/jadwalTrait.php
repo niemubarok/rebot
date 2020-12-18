@@ -82,7 +82,7 @@ trait jadwalTrait
             return $reply;
         } else if ($keywordsPoli == $poli && $this->poli() == null) {
 
-            $this->flashSession('question', 'pilih poli');
+            $this->updateWaTable('question', 'pilih poli');
             return $this->reply("Mohon maaf jadwal $poli tidak tersedia. \nBerikut poli yang tersedia: \n{$this->listPoliDariJadwal()}\n\n" .
                 "Silahkan balas dengan nama poli di atas");
         } else if ($this->jadwalPoli() == "") {

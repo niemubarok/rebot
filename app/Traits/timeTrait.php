@@ -264,8 +264,14 @@ trait timeTrait
       case str_contains($month, "septmber"):
         $month = str_replace("septmber", "september", $month);
         break;
+      case str_contains($month, "sepetember"):
+        $month = str_replace("sepetember", "september", $month);
+        break;
       case str_contains($month, "septmbr"):
         $month = str_replace("septmbr", "september", $month);
+        break;
+      case str_contains($month, "sept"):
+        $month = str_replace("sept", "september", $month);
         break;
       case str_contains($month, "sptmbr"):
         $month = str_replace("sptmbr", "september", $month);
@@ -317,33 +323,33 @@ trait timeTrait
     $isExist = Str::of($tgl)->contains('lahir');
 
     if ($isExist == true) {
-      
-      
-      
+
+
+
       $tglLahir = Str::after($tgl, 'tanggal lahir');
       $tglLahir = Str::before($tglLahir, '~');
       $tglLahir = Str::before($tglLahir, '>');
-      
+
       $tglLahir = Str::before($tglLahir, 'berobat');
       $tglLahir = Str::before($tglLahir, 'dokter');
       $tglLahir = Str::before($tglLahir, 'poli');
       $tglLahir = Str::of($tglLahir)->replaceMatches('/\(|tgl|\(tgl-bln-thn\)/', '');
       $tglLahir = trim($tglLahir, ' ');
       $tglLahir = $this->findMonth($tglLahir);
-      
+
       $dateWithStrip = preg_match('/[0-9]{4}-[0-9]{2}/', $tglLahir);
       $dateWithSlash = preg_match('/[0-9]{4}\/[0-9]{2}/', $tglLahir);
       $dateWithSpace = preg_match('/[0-9]{4} [0-9]{2}/', $tglLahir);
       $dateWithSpace2 = preg_match('/[0-9]{2} [0-9]{2} [0-9]{4}/', $tglLahir);
-      
-      $tglLahir = Str::endsWith($tglLahir, '-')? rtrim($tglLahir, '-'): $tglLahir;
+
+      $tglLahir = Str::endsWith($tglLahir, '-') ? rtrim($tglLahir, '-') : $tglLahir;
 
       if ($tglLahir !== "") {
         if ($dateWithSpace) {
           $tglLahir = explode(" ", $tglLahir);
           $tglLahir = implode('-', $tglLahir);
         }
-        
+
         if ($tglLahir == date('m-d-Y') || $tglLahir == date('m-d-Y') || $tglLahir == date('Y-d-m')) {
           $tglLahir = date('Y-m-d');
         } else if ($dateWithStrip || $dateWithSlash || $dateWithSpace) {
@@ -359,12 +365,9 @@ trait timeTrait
           $tglLahir = implode('-', $tglLahir);
         }
         return $tglLahir;
-
-        
-      }else{
+      } else {
         // return $tglLahir;
         return $this->getWaTableData('tgl_lahir');
-
       }
     }
   }
@@ -373,24 +376,47 @@ trait timeTrait
 
   public function getTglBerobat()
   {
+
+    if ($this->getWaTableData('questions') == 'tglBerobat') {
+      $date = $this->senderMessage();
+    }
+
+    // return $date;
+
+
     $tgl = Str::of($this->senderMessage())->replaceMatches("/tgl berobat|tanggal periksa|tgl registrasi|tanggal registrasi|tanggal berobat|berobat(tgl-bln-thn)/", 'tgl berobat');
 
     // return $date;
 
     $date = Str::of($tgl)->replace('(tgl-bln-thn)', '');
     $date = Str::after($date, 'tgl berobat');
+
+    // return date('Y-m-d', strtotime($date));
+
     $explode = explode('-', $date);
     $grep = preg_grep('/[0-9]{2}|[0-9]{2}[a-z][0-9]{4}/', $explode);
     $date = implode('-', $grep);
     $date = trim($date, ' ');
     $date = $this->findMonth($date);
+
+    //match 2020-09-20
     $dateWithStrip = preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2/', $date);
-    $dateWithSlash = preg_match('/[0-9]{4}\/[0-9]{2}/', $date);
+
+    //match 2020/09/20
+    $dateWithSlash = preg_match('/[0-9]{4}\/[0-9]{2}\/[0-9]{2}/', $date);
+
+    //match 2020 09 20
     $dateWithSpace = preg_match('/[0-9]{4} [0-9]{2}/', $date);
-    $dateWithSpace2 = preg_match('/[0-9]{2} [0-9]{2} [0-9]{4}/', $date);
+
+    // $dateWithSpace2 = preg_match('/[0-9]{2} [0-9]{2} [0-9]{4}/', $date);
     $isExist = Str::of($tgl)->contains('tgl');
     // return $isExist;
-    if($date == null){
+
+    $strTotimeDate = strtotime($date);
+
+
+
+    if ($date == null) {
       return date('Y-m-d');
     }
 
@@ -400,16 +426,20 @@ trait timeTrait
         $date = implode('-', $date);
       }
 
-      if ($date == date('m-d-Y') || $date == date('m-d-Y') || $date == date('Y-d-m')) {
-        $date = date('Y-m-d');
-      } else
-        if ($dateWithStrip || $dateWithSlash || $dateWithSpace) {
+      
+      if ($strTotimeDate == date('m-d-Y') || $strTotimeDate == date('m-d-Y') || $strTotimeDate == date('Y-d-m') ||$strTotimeDate == date('d-m-Y')|| $strTotimeDate == date('y-m-d') || $strTotimeDate == date('d-m-y')) {
+        $date = date('Y-m-d', $strTotimeDate);
 
+      } else
+      if ($dateWithStrip || $dateWithSlash || $dateWithSpace) {
+        
         $date = $this->formatTgl($date);
       } else {
-
+        
         $date = $this->find_date($date);
         $date = implode('-', $date);
+        $date = date('Y-m-d', strtotime($date));
+
       }
 
       return $date;

@@ -50,7 +50,7 @@ trait poliTrait
         // $keywordsGigi
         $keywordsGigi = $this->findKeywords(['gigi', 'gigi dan mulut', 'dentis', 'dentist', 'poli gigi'], $message);
 
-        $keywordsBedahUmum = $this->findKeywords(['bedah umum', 'bedahumum', 'poli bedah umum', 'poli bedah'], $message);
+        $keywordsBedahUmum = $this->findKeywords(['bedah umum', 'bedahumum', 'poli bedah umum', 'poli bedah','bedah'], $message);
 
         $keywordsOrthopedi = $this->findKeywords(['orthopaedy', 'orthopedy', 'orthopaedi', 'orthopedi', 'ortopedi', 'ortopaedi', 'ortopeadi', 'orthopeady', 'orthopeady', 'orthopeadi', 'orthopeadi'], $message);
 
@@ -74,7 +74,7 @@ trait poliTrait
         } else if ($keywordsPoliKulit) {
             $poliTujuan = substr_replace($keywordsPoliKulit, "Poli Kulit", 0);
         } else if ($keywordsGigi) {
-            $poliTujuan = substr_replace($keywordsGigi, "Poli gigi", 0);
+            $poliTujuan = substr_replace($keywordsGigi, "Poli Gigi", 0);
         } else if ($keywordsBedahUmum) {
             $poliTujuan = substr_replace($keywordsBedahUmum, "Poli Bedah Umum", 0);
         } else if ($keywordsOrthopedi) {

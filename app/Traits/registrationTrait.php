@@ -37,7 +37,7 @@ trait registrationTrait
 
         $pasien                 = $this->pasien();
         $noRm                   = $this->noRm();
-        $tglLahir               = strtotime($this->getBirthDate());
+        $tglLahir               = strtotime($this->getWaTableData('tgl_lahir'));
         $tglLahir               = date('d-m-Y', $tglLahir);
         $poliSesuaiJadwal       = $this->poliSesuaiJadwal();
         $poli                   = $this->poli()->nm_poli;
@@ -53,13 +53,13 @@ trait registrationTrait
         $jamMulai               = $this->jamMulaiPraktek();
         $jamSelesai             = $this->jamSelesaiPraktek();
         $strtotimeJamSelesai    = strtotime($this->jamSelesaiPraktek());
-        $strtotimeMessageTime   = $this->timestamp();
+        // $strtotimeMessageTime   = $this->timestamp();
+        $moreThanJamPraktek       = $strtotimeJamSelesai == null ? false: $this->timestamp() >= $strtotimeJamSelesai;
 
         $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
 
-
-        if ($dateFromMessage == date('Y-m-d') && $strtotimeJamSelesai <= $strtotimeMessageTime) {
-            return [$this->reply("Mohon maaf bapak/ibu untuk hari ini jam praktek $dokter *SUDAH / AKAN SELESAI*"), "Berikut jadwal $poli:\n" . $this->jadwalPoli(), "\nSilahkan *ULANGI PENDAFTARAN DAN PILIH TANGGAL LAINNYA*."];
+        if ($this->getTglBerobat() == date('Y-m-d') && $moreThanJamPraktek && $poliSesuaiJadwal !== null) {
+            return [$this->reply("Mohon maaf bapak/ibu untuk hari ini jam praktek dr. $dokterFromMessage *SUDAH / AKAN SELESAI*"), "Berikut jadwal $poli:\n" . $this->jadwalPoli(), "\nSilahkan *ULANGI PENDAFTARAN DAN PILIH TANGGAL LAINNYA*."];
         }
 
         if ($dateFromMessage < date('Y-m-d') == true || $dateFromTable < date('Y-m-d') == true) {
@@ -84,13 +84,13 @@ trait registrationTrait
 
                     "\n\n~ *NIK*: {$this->getNoKtp()}" .
                     "\n~ *Nama sesuai KTP*: {$this->getNamaPasien()}" .
-                    "\n~ *Tempat Lahir*: {$this->getWaTableData('tempat_lahir')}" .
+                    "\n~ *Tempat Lahir*: " .
                     "\n~ *Lahir(tgl-bln-thn)*: " . $tglLahir .
-                    "\n~ *Jns. Kelamin*: {$this->getWaTableData('jk')}" .
+                    "\n~ *Jns. Kelamin*: " .
                     "\n~ *Agama*: " .
-                    "\n~ *Alamat*: {$this->getWaTableData('alamat')}" .
-                    "\n~ *poli tujuan*: {$this->getWaTableData('poli')}" .
-                    "\n~ *dokter tujuan*: {$this->getWaTableData('dokter')}" .
+                    "\n~ *Alamat*: " .
+                    "\n~ *Poli tujuan*: {$this->getWaTableData('poli')}" .
+                    "\n~ *Dokter tujuan*: {$this->getWaTableData('dokter')}" .
                     "\n~ *TGl. Berobat(tgl-bln-thn)*: " . date('d-m-Y', strtotime($dateFromTable))
 
                 // "Balas dengan angka 0 untuk kembali ke menu utama"
@@ -105,15 +105,23 @@ trait registrationTrait
                 return [$this->reply("Mohon maaf jadwal $poli tidak tersedia. \nBerikut poli yang tersedia: \n{$this->listPoliDariJadwal()}"), "Silahkan ulangi pendaftaran dengan nama dokter dan tanggal yang sesuai"];
             } else {
 
-                return [$this->reply("Mohon maaf hari $hari (" . date('d-m-Y', $tglRegistrasi) . ") tidak ada jadwal $poli.\nBerikut jadwal $poli:\n{$this->jadwalPoli()}"), "Silahkan ulangi pendaftaran dengan nama poli dan tanggal yang sesuai"];
+                return [$this->reply("Mohon maaf hari $hari (" . date('d-m-Y', $tglRegistrasi) . ") tidak ada jadwal $poli.\nBerikut jadwal $poli:\n{$this->jadwalPoli()}"), "Silahkan *ULANGI PENDAFTARAN* dengan *NAMA POLI* dan *TANGGAL YANG SESUAI*"];
             }
         } else if ($dokterFromMessage == null || !isset($dokter)) {
 
             $this->updateWaTable('questions', '');
 
+
+            $createDate = strtotime(($this->getTglBerobat()));
+            // return $createDate;
+            $date = date('d-m-Y', $createDate);
+            $day = date('D', $createDate);
+            $dayAndDate = "{$this->dayTohari($day)}, " . $date;
+            // return $dayAndDate;
+
             return [
-                $this->reply("Mohon maaf hari $hari (" . date('d-m-Y', $tglRegistrasi) . ") tidak ada dokter $poli a/n. {$this->getDokter()}\nBerikut jadwal " . $poli . ":\n" . $this->jadwalPoli(0)),
-                "Silahkan ulangi pendaftaran dengan nama dokter dan tanggal yang sesuai"
+                $this->reply("Mohon maaf hari " . $dayAndDate. " tidak ada dokter yang anda maksud.\nBerikut jadwal " . $poli . ":\n" . $this->jadwalPoli(0)),
+                "Silahkan *ULANGI PENDAFTARAN* dengan *NAMA DOKTER* dan *TANGGAL YANG SESUAI*"
             ];
         } else if (!empty($regPeriksa)) {
             $this->updateWaTable('questions', '');
@@ -170,7 +178,7 @@ trait registrationTrait
                     "\nPoli Tujuan : *$poli*" .
                     "\nDokter: *$dokter*" .
                     "\nTanggal Periksa: *" . date('d-m-Y', strtotime($dateFromTable)) . "*" .
-                    "\njam praktek : pkl. $jamMulai s/d $jamSelesai." .
+                    "\nJam praktek : pkl. $jamMulai s/d $jamSelesai." .
                     "\nNo. Antrian : *" . $noAntrian . "*" .
 
                     "\n\n*Datanglah sesuai jam praktek dokter.*" .

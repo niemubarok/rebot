@@ -55,12 +55,12 @@ trait dokterTrait
 
         // penyakit dalam
         $LINA = $this->findKeywords(['lina', 'lyna', 'rina'], $dokter);
-        $WULUNGGONO = $this->findKeywords(['wulung gono', 'wulungono','wulunggono','wullunggono','wulung ono'], $dokter);
+        $WULUNGGONO = $this->findKeywords(['wulung gono', 'wulungono', 'wulunggono', 'wullunggono', 'wulung ono'], $dokter);
 
 
         //poli anak
 
-        $LENGKONG = $this->findKeywords(['lengkong','lenkong'], $dokter);
+        $LENGKONG = $this->findKeywords(['lengkong', 'lenkong'], $dokter);
         $NAOMI = $this->findKeywords(['naomi', 'naumi', 'nami'], $dokter);
 
         $INDRA = $this->findKeywords(['indra'], $dokter);
@@ -69,31 +69,36 @@ trait dokterTrait
 
         // POLI BEDAH UMUM
         $AZMIROSYAFORAYOGA = $this->findKeywords(['azmi rosya forayoga', 'azmi rosa', 'azmi rosya'], $dokter);
-        $HENDRASHTO = $this->findKeywords(['hendrashto', 'hendrasto','hendasto','hendarasto'], $dokter);
+        $HENDRASHTO = $this->findKeywords(['hendrashto', 'hendrasto', 'hendasto', 'hendarasto'], $dokter);
 
         // POLIMATA
-        $OLLYCONGGA = $this->findKeywords(['olly congga', 'oly congga','olly','olli conga', 'olli congga', 'olly conga'], $dokter);
+        $OLLYCONGGA = $this->findKeywords(['olly congga', 'oly congga', 'olly', 'olli conga', 'olli congga', 'olly conga'], $dokter);
         $ELIZAR = $this->findKeywords(['elizar', 'ellizar', 'elizzar'], $dokter);
 
         // POLI PARU 
-        $ABDULROHMAN = $this->findKeywords(['abdul rahman', 'abdurrahman', 'abdur rahman','abdurrohman', 'abdul rohman', 'abdur rohman', 'abd. rohman','abd rohman', 'abdul rokhman', 'abdurrokhman', 'abdurrochman', 'abdur rokhman', 'abdur rochman'], $dokter);
+        $ABDULROHMAN = $this->findKeywords(['abdul rahman', 'abdurrahman', 'abdur rahman', 'abdurrohman', 'abdul rohman', 'abdur rohman', 'abd. rohman', 'abd rohman', 'abdul rokhman', 'abdurrokhman', 'abdurrochman', 'abdur rokhman', 'abdur rochman'], $dokter);
 
         // POLI THT 
         $IRMA  = $this->findKeywords(['irma', 'ilma', 'ilna', 'irna'], $dokter);
 
         // POLI SYARAF
-        $NOVIEDIYAHNURAINI = $this->findKeywords(['novie diyah nuraini', 'novie diyah nu\'aini','novie dyah'], $dokter);
-        $NASRULMUSADIR = $this->findKeywords(['nasrul musadir','nasrul'], $dokter);
+        if (strtolower($this->getPoli()) == 'poli syaraf') {
+            $NOVIEDIYAHNURAINI = $this->findKeywords(['novy', 'novi', 'novie diyah nuraini', 'novie diyah nu\'aini', 'novie dyah'], $dokter);
+        }
+        $NASRULMUSADIR = $this->findKeywords(['nasrul musadir', 'nasrul'], $dokter);
 
         // POLI KULIT DAN KELAMIN
-        $VINCENTIA  = $this->findKeywords(['vincentia','vicentia','vicencia','vincencia'], $dokter);
+        $VINCENTIA  = $this->findKeywords(['vincentia', 'vicentia', 'vicencia', 'vincencia', 'vincen'], $dokter);
 
         // POLI GIGI 
-        $NELLYYUNIADEWI = $this->findKeywords(['nelly yunia dewi', 'nely yunia dewi', 'nelli','neli yunia dewi'], $dokter);
-        $NOVI = $this->findKeywords(['novi'], $dokter);
-        $PANARIA = $this->findKeywords(['panaria','panarya'], $dokter);
+        $NELLYYUNIADEWI = $this->findKeywords(['nelly yunia dewi', 'nely yunia dewi', 'nely', 'nelly', 'nelli', 'neli yunia dewi'], $dokter);
+        $PANARIA = $this->findKeywords(['panaria', 'panarya'], $dokter);
         $PRASETYO = $this->findKeywords(['prasetyo', 'prasetio'], $dokter);
 
+        if (strtolower($this->getPoli()) == 'poli gigi') {
+
+            $NOVIINDRIANI = $this->findKeywords(['novy', 'novi', 'novy indriani', 'novy indriany', 'novi indriani', 'novi indriyani'], $dokter);
+        }
 
         switch (true) {
             case  $LINA:
@@ -113,19 +118,19 @@ trait dokterTrait
                 return "indra";
                 break;
             case $JUNIATI:
-                return "juniati";
+                return "juniaty";
                 break;
             case $KOMANGARIANTO:
                 return "komang arianto";
                 break;
             case $AZMIROSYAFORAYOGA:
-                return "azmi rosya forayoga";
+                return "azmi rosya";
                 break;
             case $HENDRASHTO:
-                return "hendrashto";
+                return "hendrastho";
                 break;
             case $OLLYCONGGA:
-                return "olly congga";
+                return "olly conga";
                 break;
             case $ELIZAR:
                 return "elizar";
@@ -137,7 +142,10 @@ trait dokterTrait
                 return "irma";
                 break;
             case $NOVIEDIYAHNURAINI:
-                return "novie diyah nuraini";
+                if (strtolower($this->getPoli()) == 'poli syaraf') {
+
+                    return "novi";
+                }
                 break;
             case $NASRULMUSADIR:
                 return "nasrul musadir";
@@ -146,10 +154,14 @@ trait dokterTrait
                 return "vicencia";
                 break;
             case $NELLYYUNIADEWI:
-                return "nelly yunia dewi";
+                return "nely yulia dewi";
                 break;
-            case $NOVI:
-                return "novi";
+            case $NOVIINDRIANI:
+                if (strtolower($this->getPoli()) == 'poli gigi') {
+
+                    return "novy";
+                }
+                // return "novy";
                 break;
             case $PANARIA:
                 return "panaria";
