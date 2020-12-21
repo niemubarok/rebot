@@ -2,13 +2,10 @@
 
 namespace App\Traits;
 
-use App\Classes\WhatsATL;
-use QRcode;
-use Twilio\TwiML\MessagingResponse;
 use Illuminate\Support\Str;
 use App\Traits\messageTrait;
 
-include(app_path('phpqrcode/qrlib.php'));
+// include(app_path('phpqrcode/qrlib.php'));
 
 trait agTrait
 {
@@ -31,14 +28,6 @@ trait agTrait
             return $pesan;
         }
     }
-    // public function reply($pesan)
-    // {
-    //     return [['type' =>
-    //     'message', 'data' => [
-    //         'mode' => 'chat',
-    //         'pesan' => $pesan
-    //     ]]];
-    // }
 
     public function mainMenu()
     {
@@ -59,30 +48,35 @@ trait agTrait
         return $this->reply("\n- *NIK/Rekam Medis*:\n- *Nama sesuai KTP*:\n- *Lahir(tgl-bln-thn)*:\n- *Poli tujuan*:\n- *Dokter tujuan*:\n- *TGL. Berobat(tgl-bln-thn)*:");
     }
 
-    public function replyMedia($link, $caption)
-    {
-        $source = base64_encode(file_get_contents($link));
-        $result[] = ['type' => 'file', 'data' => ['mode' => 'chat', 'pesan' => $caption, 'filetype' => 'image/png', 'source' => $source, 'name' => 'qrcode']];
+    //sementara belum digunakan
 
-        return $result;
-    }
+    // public function replyMedia($link, $caption)
+    // {
+    //     $source = base64_encode(file_get_contents($link));
+    //     $result[] = ['type' => 'file', 'data' => ['mode' => 'chat', 'pesan' => $caption, 'filetype' => 'image/png', 'source' => $source, 'name' => 'qrcode']];
 
-    public function storeQrCode($content, $fileName)
-    {
-        $tempDir = public_path('storage/qrcode/');
-        $codeContents = $content;
-        $file = $fileName . '.png';
-        $pngAbsoluteFilePath = $tempDir . $file;
-        QRcode::png($codeContents, $pngAbsoluteFilePath);
-        return asset('storage/qrcode/' . $file);
-    }
+    //     return $result;
+    // }
 
-    public function sendQrCode($pesan, $link)
-    {
-        $response = new MessagingResponse();
-        $message = $response->message($pesan);
-        $message->media($link);
+    
 
-        return $response;
-    }
+//     public function storeQrCode($content, $fileName)
+//     {
+//         $tempDir = public_path('storage/qrcode/');
+//         $codeContents = $content;
+//         $file = $fileName . '.png';
+//         $pngAbsoluteFilePath = $tempDir . $file;
+//         QRcode::png($codeContents, $pngAbsoluteFilePath);
+//         return asset('storage/qrcode/' . $file);
+//     }
+
+//     public function sendQrCode($pesan, $link)
+//     {
+//         $response = new MessagingResponse();
+//         $message = $response->message($pesan);
+//         $message->media($link);
+
+//         return $response;
+//     }
+// }
 }

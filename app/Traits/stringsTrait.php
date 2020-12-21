@@ -22,11 +22,6 @@ trait stringsTrait
         return trim(".",$string);
     }
 
-    public function replacePattern()
-    {
-        // return Str::of($string)->replaceMatches(, $replace);
-    }
-
 
 
 

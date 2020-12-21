@@ -26,7 +26,7 @@ trait keywordsTrait
   public function keywordsNama()
   {
 
-    $replace = Str::of($this->senderMessage())->replaceMatches("/nama sesuai ktp|nama sesuai|nama pasien|nama lengkap|namanya|nama di ktp|nama saya|nama sy/", 'nama');
+    $replace = Str::of($this->senderMessage())->replaceMatches("/nama sesuai ktp|nama sesuai|nama pasien|nama lengkap|namanya|nama di ktp|nama saya|nama sy|ibu|bapak|bpk|bp.|bp/", 'nama');
     return $replace;
   }
 

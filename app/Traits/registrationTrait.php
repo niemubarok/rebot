@@ -53,7 +53,6 @@ trait registrationTrait
         $jamMulai               = $this->jamMulaiPraktek();
         $jamSelesai             = $this->jamSelesaiPraktek();
         $strtotimeJamSelesai    = strtotime($this->jamSelesaiPraktek());
-        // $strtotimeMessageTime   = $this->timestamp();
         $moreThanJamPraktek       = $strtotimeJamSelesai == null ? false: $this->timestamp() >= $strtotimeJamSelesai;
 
         $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
@@ -62,16 +61,16 @@ trait registrationTrait
             return [$this->reply("Mohon maaf bapak/ibu untuk hari ini jam praktek dr. $dokterFromMessage *SUDAH / AKAN SELESAI*"), "Berikut jadwal $poli:\n" . $this->jadwalPoli(), "\nSilahkan *ULANGI PENDAFTARAN DAN PILIH TANGGAL LAINNYA*."];
         }
 
-        if ($dateFromMessage < date('Y-m-d') == true || $dateFromTable < date('Y-m-d') == true) {
+        // || $dateFromTable < date('Y-m-d') == true
+        // dd($this->getTglBerobat()) ;
+
+        if ($this->getTglBerobat() < date('Y-m-d') == true) {
 
             $this->updateWaTable('questions', 'tglBerobat');
             return "Tanggal berobat tidak boleh *KURANG* dari *HARI INI*" .
                 "\n*BALAS* dengan format (tanggal-bulan-tahun)" .
                 "\n\nContoh: " . date('d-m-Y');
         }
-
-
-
 
         if (!isset($pasien)) {
 
@@ -88,8 +87,8 @@ trait registrationTrait
                     "\n~ *Lahir(tgl-bln-thn)*: " . $tglLahir .
                     "\n~ *Jns. Kelamin*: " .
                     "\n~ *Agama*: " .
-                    "\n~ *Alamat*: " .
-                    "\n~ *Poli tujuan*: {$this->getWaTableData('poli')}" .
+                    "\n~ *Alamat*: {$this->getAlamat()} " .
+                    "\n~ *Poli tujuan*: {$this->getPoli()}" .
                     "\n~ *Dokter tujuan*: {$this->getWaTableData('dokter')}" .
                     "\n~ *TGl. Berobat(tgl-bln-thn)*: " . date('d-m-Y', strtotime($dateFromTable))
 
@@ -97,7 +96,7 @@ trait registrationTrait
             ];
         } else if (!isset($poli)) {
             $this->updateWaTable('questions', 'pilih poli');
-            return $this->reply("Anda ingin berobat ke poli apa?, berikut nama poli yang tersedia:\n- " . $listPoli . "\nSilahkan balas dengan nama poli tujuan anda");
+            return $this->reply("Anda ingin berobat ke poli apa?\nBerikut nama poli yang tersedia:\n- " . $listPoli . "\n\nSilahkan balas dengan *nama poli* tujuan anda");
         } else if (!isset($poliSesuaiJadwal) || $poliSesuaiJadwal == null) {
 
             if ($listPoliDariJadwal == false) {
@@ -113,11 +112,9 @@ trait registrationTrait
 
 
             $createDate = strtotime(($this->getTglBerobat()));
-            // return $createDate;
             $date = date('d-m-Y', $createDate);
             $day = date('D', $createDate);
             $dayAndDate = "{$this->dayTohari($day)}, " . $date;
-            // return $dayAndDate;
 
             return [
                 $this->reply("Mohon maaf hari " . $dayAndDate. " tidak ada dokter yang anda maksud.\nBerikut jadwal " . $poli . ":\n" . $this->jadwalPoli(0)),
@@ -170,10 +167,12 @@ trait registrationTrait
             $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
             $noAntrian = $regPeriksa->no_reg;
 
+            $namaPasien = trim($pasien->nm_pasien,' ');
+
             $response = $this->reply(
                 "Anda sudah terdaftar" .
                     "\n\n--Detail Pendaftaran--" .
-                    "\nNama: *$pasien->nm_pasien*" .
+                    "\nNama: *$namaPasien*" .
                     "\nNo. RM: *$pasien->no_rkm_medis*" .
                     "\nPoli Tujuan : *$poli*" .
                     "\nDokter: *$dokter*" .

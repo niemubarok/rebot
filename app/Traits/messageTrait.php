@@ -24,22 +24,11 @@ trait messageTrait
         $this->request = $request;
     }
 
-
-    public function tesJadwal()
-    {
-        return "list Jadwal";
-    }
-
-
-
-
-
     public function senderMessage()
     {
 
         $message = strtolower($this->request['data']['message']['pesan']);
         $message = Str::of($message)->replaceMatches('/\*|\n|:|\./', '');
-        // $message = Str::finish($message, '~');
         return $message;
     }
 
@@ -67,9 +56,7 @@ trait messageTrait
         $explode = explode(' ',$message);
         $nik = preg_grep('/[0-9]{14}/', $explode);
         $nik = implode($nik);
-        // $nik = Str::of($nik)->replaceMatches("/medis|nik\/rekam medis|ktp|nik|nomor ktp|no.ktp|no ktp|rekam medis|rm|\s|~|-|\./", '');
         $nik = Str::of($nik)->replaceMatches("/[a-z]|-|\s|~|\+/", '');
-        // return $nik;
         
         if (Str::of($message)->contains("nik")) {
             return $nik;
@@ -78,8 +65,6 @@ trait messageTrait
             return $this->getWaTableData('nik');
         }
     }
-
-
 
     public function getRm()
     {
@@ -104,21 +89,22 @@ trait messageTrait
     {
 
         $isExist = Str::of($this->senderMessage())->contains('nama');
-        // dd($isExist);
         $this->getWaTableData('nama');
 
         if ($isExist) {
 
             $namaPasien = Str::after($this->keywordsNama(), 'nama');
-            $namaPasien = Str::of($namaPasien)->replaceMatches('/-|>|lahir|\(|pasien|\"|\//', '~');
+            // $namaPasien = Str::of($namaPasien)->replaceMatches('/-|>|lahir|\(|pasien|\"|\//', '~');
+            $namaPasien = Str::of($namaPasien)->replace(['ingin', 'mau','-','>','lahir','\(','pasien','\"','\//','mendaftar','dokter','poli'], '~');
             $namaPasien = Str::before($namaPasien, '~');
+
             $namaPasien = Str::title(trim($namaPasien, ' '));
 
-            return $namaPasien;
         } else {
             return $this->getWaTableData('nama');
-
+            
         }
+        return $namaPasien;
     }
 
     public function getDokter()
@@ -134,7 +120,6 @@ trait messageTrait
             $dokter     = Str::before($dokter, '~');
             $dokter     = Str::of($dokter)->replace(['tujuan','yang dituju','dokter tujuan','dokter','dr. ','doktor','-/','drg','drg.'], '');
             
-            // return $dokter;
             $dokter = $this->keywordsNamaDokter($dokter);
 
             return ltrim(trim($dokter, ' '),'dr');
@@ -154,26 +139,16 @@ trait messageTrait
             $dokter     = Str::of($dokter)->replaceMatches('/tgl|berobat|\(|-/', '~');
             $dokter     = Str::before($dokter, '~');
             $dokter     = Str::of($dokter)->replace(['tujuan','yang dituju','dokter tujuan','dokter','dr. ','doktor','-/','drg','drg.'], '');
-            
-            // return $dokter;
-            // $dokter = $this->keywordsNamaDokter($dokter);
 
             return ltrim(trim($dokter, ' '),'dr');
         }
         
     }
 
-    // public function getDayFromMessage()
-    // {
-    //     $day = trim(Str::after($this->senderMessage(), "hari:"), "\"");
-    //     return ltrim(rtrim($day, ' '), ' ');
-    // }
-
     public function getJenisKelamin()
     {
 
         $jk     = Str::of($this->senderMessage())->replaceMatches('/jenis kelamin|jns kelamin|jns. kelamin|kelamin|gender/', 'jenis kelamin');
-        // return $jk;
 
         $isExist = Str::of($jk)->contains('jenis kelamin');
 
@@ -200,7 +175,9 @@ trait messageTrait
 
         if ($isExist == true) {
 
-            $alamat  = Str::between($this->senderMessage(), "alamat", '~');
+            $alamat  = Str::after($this->senderMessage(), "alamat");
+            $alamat = Str::of($alamat)->replace(['ingin', 'mau','-','>','lahir','\(','pasien','\"','\//','mendaftar','dokter','poli','tanggal','tgl'], '~');
+            // $alamat  = Str::between($alamat, "alamat", '~');
             $alamat = Str::before($alamat, '~');
 
             $alamat  = trim(trim($alamat, ' '), ': ');

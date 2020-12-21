@@ -146,9 +146,7 @@ trait poliTrait
 
     public function poli() //mencari poli dari database sesuai poli yang diketik pasien
     {
-        // $namaPoli = $this->keywordsPoli($this->getWaTableData('poli'));
         $namaPoli = $this->getPoli();
-        // $namaPoli = $namaPoli == null ? $this->getPoli() : $namaPoli;
         if($namaPoli !== null){
 
             $poli = Poli::where('nm_poli', 'like', $namaPoli)->first();

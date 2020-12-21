@@ -10,7 +10,7 @@ class RegPeriksa extends Model
     protected $guarded = [];
 
     public $timestamps = false;
-    // protected $appends = ['nm_dokter'];
+
     protected $visible = ['no_rawat','no_rkm_medis', 'kd_dokter' , 'kd_poli', 'kontak_wa', 'tgl_registrasi', 'no_reg'];
 
     public function poli()
@@ -32,9 +32,4 @@ class RegPeriksa extends Model
     {
         return $this->hasOne('App\Models\pasien', 'no_rkm_medis', 'no_rkm_medis');
     }
-
-    // public function getNmDokterAttribute()
-    // {
-    //     return $this->dokter->nm_dokter;
-    // }
 }

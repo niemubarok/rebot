@@ -28,6 +28,8 @@ trait jadwalTrait
 
     public function namaDokterDariJadwal()
     {
+
+        // $tglBerobat = $this->getWaTableData('questions') == "tglBerobat" ? $this->formatTgl($this->senderMessage()): $this->getTglBerobat();
         //dokter tujuan jika ditemukan di jadwal dokter
         $jadwalPerDokter = JadwalDokter::where('kd_poli', $this->kodePoli())
             ->where('kd_dokter', $this->kodeDokterDiJadwal())
