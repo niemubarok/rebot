@@ -17,6 +17,7 @@
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "messagebird/php-rest-api": "^1.19",
+        "mike42/escpos-php": "^3.0",
         "twilio/sdk": "^6.10"
     },
     "require-dev": {
