@@ -1,42 +1,39 @@
-@extends('layouts.master')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+  
+    <script src="https://kit.fontawesome.com/3219f97a2c.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script> 
+   
 
-<div class="container-fluid bg bg-secondary">
-    <div class="row justify-content-center bg-white">
+    <style>#success_message{ display: none;}</style>
 
-     
+    
+    <title>@yield('title')</title>
+</head>
+<body>
 
-        <div class="col-auto d-flex ">
-        <img src="http://www.rsalisibrohmalisi.com/wp-content/uploads/2019/12/sibroh-logo-baru.jpg" class="rounded">
-        </div>
-    </div>
-    <div class="row justify-content-center" >
-        
+@yield('content')
 
-        <div class="col-auto d-flex">
-            <div class="card  mb-2 p-1 " style="background-color: lightsalmon; margin-top: -10px">
-                
-                <h1 class="font-weight-bold">FORM PASIEN BARU</h1>
-                <div class="card-body" style="margin-top: -30px; padding-bottom: -20px">
-                        Silahkan Lengkapi Formulir di bawah ini:
-                </div>
-            </div>
-          </div>
-    </div>
+</body>
 
-    <div class="row justify-content-center " style="margin-top:10px">
-        <div class="col col-auto d-flex ">
-        
-            <form class="well form-horizontal" action="/proses " method="post"  id="contact_form">
-                <!-- Form Name -->
-                <div class="form-group">
-                    @csrf
-                    @yield('formpasienbaru')
-                </div>    
-            </form>   
-            
-        </div>
-    </div>
-</div>
+<script type="text/javascript">
+    $('#birthdate').datepicker({
+        autoclose: true,
+        format: 'dd-mm-yyyy'
+     });
+</script>
 
-@endsection
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+</html>

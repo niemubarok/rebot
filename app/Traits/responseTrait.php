@@ -23,6 +23,7 @@ trait responseTrait
         $regIntent          = Str::of($this->senderMessage())->containsAll(['nama', 'dokter', 'poli']);
         $regIntent2          = Str::of($this->senderMessage())->containsAll(['daftar', 'ke',]);
         $sayaMauDaftar      = Str::of($this->senderMessage())->containsAll(['mau', 'daftar']);
+        $mauKePoli      = Str::of($this->senderMessage())->containsAll(['mau', 'ke', 'poli']);
         $sayaInginDaftar      = Str::of($this->senderMessage())->containsAll(['ingin', 'daftar']);
         $pasienBaruIntent   = Str::of($this->senderMessage())->containsAll(['jns', 'kelamin', 'alamat']);
         $pregjadwal         = stripos($this->senderMessage(), "jadwal");
@@ -60,14 +61,12 @@ trait responseTrait
 
             case $this->getWaTableData('questions') == "tglBerobat":
                 $this->updateWaTable('questions', '');
-                $date= $this->find_date($this->senderMessage());
+                $date = $this->find_date($this->senderMessage());
                 $this->updateWaTable('tgl_berobat', $date);
                 // $this->updateWaTable('tgl_berobat', $this->getTglBerobat());
-                
+
 
                 return $this->registration();
-
-
                 break;
             case $regIntent:
 
@@ -85,6 +84,7 @@ trait responseTrait
                 break;
             case $sayaInginDaftar:
             case $sayaMauDaftar:
+            case $mauKePoli:
             case $regIntent2:
                 return [
                     "Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \" \n\nContoh: jadwal poli anak.",
@@ -124,4 +124,3 @@ trait responseTrait
         }
     }
 }
-

@@ -36,7 +36,7 @@ trait poliTrait
         $keywordsObgyn  = $this->findKeywords(['kndungan', 'kandungan', 'obgin', 'obgyn', 'spog', 'sp.og', 'kndngn', 'obg'], $message);
 
         //mencari keywords internis yang diketikan pasien
-        $keywordsPoliDalam  = $this->findKeywords(['internis', 'intrenis', 'intrns', 'penyakit dalam', 'pnykt dlm', 'pny dlm', 'p.dlm', 'sppd', 'poli dalam', 'polidalam', 'polidlm', 'poli dlm', 'spesialis dalam'], $message);
+        $keywordsPoliDalam  = $this->findKeywords(['internis', 'intrenis', 'intrns', 'penyakit dalam', 'pnykt dlm', 'pny dlm', 'p.dlm', 'sppd', 'poli dalam', 'polidalam', 'polidlm', 'poli dlm', 'spesialis dalam', 'dalam', 'dlm'], $message);
 
         //mencari keywords spesialis anak yang diketikan pasien
         $keywordsPoliAnak  =  $this->findKeywords(['spesialis anak', 'spa', 'sp.a', 'anak', 'poli Anak'], $message);

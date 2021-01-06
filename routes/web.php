@@ -8,6 +8,7 @@ Route::get('/', function () {
 });
 
 Route::get('/checkin', [CheckInController::class, 'index'])->name('form');
-Route::post('/checkin', [CheckInController::class, 'store'])->name('checkin');
+Route::post('/checkin', [CheckInController::class, 'checkedIn'])->name('checkedIn');
 Route::post('/print', [CheckInController::class, 'print'])->name('print');
+Route::get('/tes', [CheckInController::class, 'tesGuzzle']);
 

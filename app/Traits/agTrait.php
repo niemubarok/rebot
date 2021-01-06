@@ -4,8 +4,9 @@ namespace App\Traits;
 
 use Illuminate\Support\Str;
 use App\Traits\messageTrait;
+use QRcode;
 
-// include(app_path('phpqrcode/qrlib.php'));
+include(app_path('phpqrcode/qrlib.php'));
 
 trait agTrait
 {
@@ -17,7 +18,7 @@ trait agTrait
             return "Wa'alaikumussalam\n" . $pesan;
         } else if (Str::contains($this->senderMessage(), ['selamat pagi', 'slmt pagi', 'slmt pagi'])) {
             return "selamat pagi,\n$pesan";
-        }else if (Str::contains($this->senderMessage(), ['selamat siang', 'slmt siang', 'slmt siang'])) {
+        } else if (Str::contains($this->senderMessage(), ['selamat siang', 'slmt siang', 'slmt siang'])) {
             return "selamat siang,\n$pesan";
         } else if (Str::contains($this->senderMessage(), ['selamat sore', 'slmt sore', 'slmt sore'])) {
             return "selamat sore,\n$pesan";
@@ -50,33 +51,54 @@ trait agTrait
 
     //sementara belum digunakan
 
-    // public function replyMedia($link, $caption)
-    // {
-    //     $source = base64_encode(file_get_contents($link));
-    //     $result[] = ['type' => 'file', 'data' => ['mode' => 'chat', 'pesan' => $caption, 'filetype' => 'image/png', 'source' => $source, 'name' => 'qrcode']];
+    public function replyMedia($contact, $source, $caption)
+    {
+        // $client = new \GuzzleHttp\Client(["base_uri" => "http://localhost:3000"]);
+        // $options = [
+        //     'headers' => [
+        //         'Origin' => 'http://localhost:9090',
+        //     ],
 
-    //     return $result;
+        //     'json' => [
+        //         'type' => 'media',
+        //         'contact' => $contact,
+        //         'source' => $source,
+        //         'img-name' => 'qrcode',
+        //         'caption' => $caption,
+        //     ]
+        // ];
+        // $client->get("/", $options);
+
+        $result = [
+            'type' => 'media',
+            'contact' => $contact,
+            'source' => $source,
+            'img-name' => 'qrcode',
+            'caption' => $caption
+        ];
+
+        return json_encode($result);
+    }
+
+
+
+    public function storeQrCode($content, $fileName)
+    {
+        $tempDir = public_path('storage/qrcode/');
+        $codeContents = $content;
+        $file = $fileName . '.png';
+        $pngAbsoluteFilePath = $tempDir . $file;
+        QRcode::png($codeContents, $pngAbsoluteFilePath);
+        return asset('storage/qrcode/' . $file);
+    }
+
+    //     public function sendQrCode($pesan, $link)
+    //     {
+    //         $response = new MessagingResponse();
+    //         $message = $response->message($pesan);
+    //         $message->media($link);
+
+    //         return $response;
+    //     }
     // }
-
-    
-
-//     public function storeQrCode($content, $fileName)
-//     {
-//         $tempDir = public_path('storage/qrcode/');
-//         $codeContents = $content;
-//         $file = $fileName . '.png';
-//         $pngAbsoluteFilePath = $tempDir . $file;
-//         QRcode::png($codeContents, $pngAbsoluteFilePath);
-//         return asset('storage/qrcode/' . $file);
-//     }
-
-//     public function sendQrCode($pesan, $link)
-//     {
-//         $response = new MessagingResponse();
-//         $message = $response->message($pesan);
-//         $message->media($link);
-
-//         return $response;
-//     }
-// }
 }

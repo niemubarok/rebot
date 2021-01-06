@@ -55,7 +55,7 @@ trait dokterTrait
 
         // penyakit dalam
         $LINA = $this->findKeywords(['lina', 'lyna', 'rina'], $dokter);
-        $WULUNGGONO = $this->findKeywords(['wulung gono', 'wulungono', 'wulunggono', 'wullunggono', 'wulung ono'], $dokter);
+        $WULUNGGONO = $this->findKeywords(['wulung gono', 'wulungono', 'wulunggono', 'wullunggono', 'wulung ono', 'gono', 'gonno'], $dokter);
 
 
         //poli anak
@@ -68,11 +68,11 @@ trait dokterTrait
         $KOMANGARIANTO = $this->findKeywords(['komang', 'komang arianto', 'komang ariyanto', 'komang aryanto'], $dokter);
 
         // POLI BEDAH UMUM
-        $AZMIROSYAFORAYOGA = $this->findKeywords(['azmi rosya forayoga', 'azmi rosa', 'azmi rosya'], $dokter);
+        $AZMIROSYAFORAYOGA = $this->findKeywords(['azmi rosya forayoga', 'azmi rosa', 'azmi rosya', 'azmi', 'azmie', 'azmy', 'ajmi'], $dokter);
         $HENDRASHTO = $this->findKeywords(['hendrashto', 'hendrasto', 'hendasto', 'hendarasto'], $dokter);
 
         // POLIMATA
-        $OLLYCONGGA = $this->findKeywords(['olly congga', 'oly congga', 'olly', 'olli conga', 'olli congga', 'olly conga'], $dokter);
+        $OLLYCONGGA = $this->findKeywords(['olly congga', 'oly congga', 'olly','olli','oly', 'olli conga', 'olli congga', 'olly conga'], $dokter);
         $ELIZAR = $this->findKeywords(['elizar', 'ellizar', 'elizzar'], $dokter);
 
         // POLI PARU 

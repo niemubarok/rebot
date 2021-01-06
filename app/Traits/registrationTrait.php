@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\BookingRegistrasi;
 use App\Models\Poli;
 use App\Models\RegPeriksa;
 use Illuminate\Support\Str;
@@ -53,7 +54,7 @@ trait registrationTrait
         $jamMulai               = $this->jamMulaiPraktek();
         $jamSelesai             = $this->jamSelesaiPraktek();
         $strtotimeJamSelesai    = strtotime($this->jamSelesaiPraktek());
-        $moreThanJamPraktek       = $strtotimeJamSelesai == null ? false: $this->timestamp() >= $strtotimeJamSelesai;
+        $moreThanJamPraktek       = $strtotimeJamSelesai == null ? false : $this->timestamp() >= $strtotimeJamSelesai;
 
         $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
 
@@ -117,7 +118,7 @@ trait registrationTrait
             $dayAndDate = "{$this->dayTohari($day)}, " . $date;
 
             return [
-                $this->reply("Mohon maaf hari " . $dayAndDate. " tidak ada dokter yang anda maksud.\nBerikut jadwal " . $poli . ":\n" . $this->jadwalPoli(0)),
+                $this->reply("Mohon maaf hari " . $dayAndDate . " tidak ada dokter yang anda maksud.\nBerikut jadwal " . $poli . ":\n" . $this->jadwalPoli(0)),
                 "Silahkan *ULANGI PENDAFTARAN* dengan *NAMA DOKTER* dan *TANGGAL YANG SESUAI*"
             ];
         } else if (!empty($regPeriksa)) {
@@ -139,6 +140,11 @@ trait registrationTrait
             $biaya_reg = Poli::select('registrasilama')->where('kd_poli', $this->kodePoli())->first();
             $biaya_reg = $biaya_reg['registrasilama'];
 
+            $noBooking = Str::of($no_rawat)->replace('/', '');
+            $noBooking = "$noBooking";
+            $linkQrCode = $this->storeQrCode($noBooking, $noBooking);
+
+            // dd($this->replyMedia($this->getContact, $linkQrCode, "caption"));
             $store = RegPeriksa::create([
                 'no_reg'          => $no_reg,
                 'no_rawat'        => $no_rawat,
@@ -162,14 +168,39 @@ trait registrationTrait
             ]);
             $store->save();
 
-            // $qrcode = $this->storeQrCode($this->pasien()->no_rkm_medis, $this->pasien()->no_rkm_medis);
+
+            
+            $storeTobookingtable = BookingRegistrasi::create(
+                [
+                    'kontak'            => $this->getContact(),
+                    'no_booking'        => $noBooking,
+                    'no_reg'            => $no_reg,
+                    'no_rm'             => $this->noRm(),
+                    'nama_pasien'       => $this->pasien()->nm_pasien,
+                    'nm_poli'           => $poli,
+                    'nm_dokter'         => $dokter,
+                    'jam_mulai'         => $jamMulai,
+                    'jam_selesai'       => $jamSelesai,
+                    'tgl_berobat'       => $dateFromTable,
+                    'tgl_registrasi'    => $dateFromTable,
+                    // 'message_time'      => '0',
+                ]
+            );
+
+            $storeTobookingtable->save();
+
+
+
+
+
+            
 
             $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
             $noAntrian = $regPeriksa->no_reg;
 
-            $namaPasien = trim($pasien->nm_pasien,' ');
+            $namaPasien = trim($pasien->nm_pasien, ' ');
 
-            $response = $this->reply(
+            $response = $this->replyMedia($this->getContact(), $linkQrCode,
                 "Anda sudah terdaftar" .
                     "\n\n--Detail Pendaftaran--" .
                     "\nNama: *$namaPasien*" .
