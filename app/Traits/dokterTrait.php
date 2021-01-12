@@ -61,7 +61,7 @@ trait dokterTrait
         //poli anak
 
         $LENGKONG = $this->findKeywords(['lengkong', 'lenkong'], $dokter);
-        $NAOMI = $this->findKeywords(['naomi', 'naumi', 'nami'], $dokter);
+        $NAOMI = $this->findKeywords(['naomi', 'naumi', 'nami','nomi', 'nomih'], $dokter);
 
         $INDRA = $this->findKeywords(['indra'], $dokter);
         $JUNIATI = $this->findKeywords(['juniati', 'juniaty', 'juniyati', 'junyati'], $dokter);
@@ -69,11 +69,11 @@ trait dokterTrait
 
         // POLI BEDAH UMUM
         $AZMIROSYAFORAYOGA = $this->findKeywords(['azmi rosya forayoga', 'azmi rosa', 'azmi rosya', 'azmi', 'azmie', 'azmy', 'ajmi'], $dokter);
-        $HENDRASHTO = $this->findKeywords(['hendrashto', 'hendrasto', 'hendasto', 'hendarasto'], $dokter);
+        $HENDRASHTO = $this->findKeywords(['hendrashto', 'hendrasto', 'hendasto', 'hendarasto','hendra'], $dokter);
 
         // POLIMATA
         $OLLYCONGGA = $this->findKeywords(['olly congga', 'oly congga', 'olly','olli','oly', 'olli conga', 'olli congga', 'olly conga'], $dokter);
-        $ELIZAR = $this->findKeywords(['elizar', 'ellizar', 'elizzar'], $dokter);
+        $ELIZAR = $this->findKeywords(['elizar', 'ellizar', 'elizzar','elly','eli','ely'], $dokter);
 
         // POLI PARU 
         $ABDULROHMAN = $this->findKeywords(['abdul rahman', 'abdurrahman', 'abdur rahman', 'abdurrohman', 'abdul rohman', 'abdur rohman', 'abd. rohman', 'abd rohman', 'abdul rokhman', 'abdurrokhman', 'abdurrochman', 'abdur rokhman', 'abdur rochman'], $dokter);

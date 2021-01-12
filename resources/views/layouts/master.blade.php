@@ -14,6 +14,7 @@
   <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
 
   <link rel="stylesheet" href="{{URL::asset("assets/css/style.css")}}">
+  {{-- <link rel="stylesheet" href="{{URL::asset("assets/css/form.css")}}"> --}}
     <style>#success_message{ display: none;}</style>
 
     
@@ -25,8 +26,8 @@
 
 @yield('content')
 
-<div class="area" >
-  <ul class="circles">
+{{-- <div class="area " >
+  <ul class="circles center">
           <li></li>
           <li></li>
           <li></li>
@@ -38,7 +39,7 @@
           <li></li>
           <li></li>
   </ul>
-</div >
+</div > --}}
 
 </body>
 

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Support\Str;
 use App\Traits\messageTrait;
+use Illuminate\Support\Facades\Config;
 use QRcode;
 
 include(app_path('phpqrcode/qrlib.php'));
@@ -12,7 +13,7 @@ trait agTrait
 {
     use messageTrait;
 
-    public function reply($pesan)
+    public function greeting($pesan)
     {
         if (Str::contains($this->senderMessage(), ['assalam', 'asalam', 'ass', 'assalamualaikum', 'assalamu\'alaikum', 'slm', 'salam'])) {
             return "Wa'alaikumussalam\n" . $pesan;
@@ -30,23 +31,47 @@ trait agTrait
         }
     }
 
+    public function reply($pesan)
+    {
+        $getConfig = Config::get("reply.$pesan");
+
+        if ($getConfig == null) {
+            return $this->greeting($pesan);
+        }
+        return $this->greeting(Config::get("reply.$pesan"));
+    }
+
+    public function multipleReply($pesan1, $pesan2, $pesan3 = null)
+    {
+
+        $getConfig = Config::get("reply.$pesan1");
+        $getConfig2 = Config::get("reply.$pesan2");
+
+        if ($getConfig == null || $getConfig2 == null) {
+
+            return [$this->greeting($pesan1), $pesan2, $pesan3];
+        }
+
+        return [
+            $this->greeting(Config::get("reply.$pesan1")),
+            Config::get("reply.$pesan2"),
+            Config::get("reply.$pesan3")
+        ];
+    }
+
     public function mainMenu()
     {
-        return  "Silahkan pilih menu berikut:" .
-            "\n1. Pendaftaran Pasien *Lama*" .
-            "\n2. Pendaftaran Pasien *Baru*" .
-            "\n3. Cek Jadwal Praktek" .
-            "\n\n*Balas dengan angka pilihan anda (1-3)*.";
+        return  Config::get('reply.MAIN_MENU');
     }
 
     public function defaultReply()
     {
-        return $this->reply("Mohon maaf kami belum dapat menjawab pesan anda.\n" . $this->mainMenu());
+        return $this->reply('DEFAULT_REPLY');
     }
 
     public function formDaftar()
     {
-        return $this->reply("\n- *NIK/Rekam Medis*:\n- *Nama sesuai KTP*:\n- *Lahir(tgl-bln-thn)*:\n- *Poli tujuan*:\n- *Dokter tujuan*:\n- *TGL. Berobat(tgl-bln-thn)*:");
+        return $this->reply('FORMAT_DAFTAR');
     }
 
     //sementara belum digunakan

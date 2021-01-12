@@ -75,11 +75,10 @@ trait registrationTrait
 
         if (!isset($pasien)) {
 
-            return [
-                $this->reply(
+            return $this->multipleReply(
                     "Mohon maaf kami tidak dapat menemukan data anda." .
                         "\nJika anda *PASIEN LAMA* mohon cek kembali *NIK/Nama/Tgl. Lahir* anda dan ulangi pendaftaran."
-                ),
+                ,
                 "\nJika anda *PASIEN BARU* silahkan *COPY PESAN INI* dan lengkapi data berikut:" .
 
                     "\n\n~ *NIK*: {$this->getNoKtp()}" .
@@ -91,10 +90,8 @@ trait registrationTrait
                     "\n~ *Alamat*: {$this->getAlamat()} " .
                     "\n~ *Poli tujuan*: {$this->getPoli()}" .
                     "\n~ *Dokter tujuan*: {$this->getWaTableData('dokter')}" .
-                    "\n~ *TGl. Berobat(tgl-bln-thn)*: " . date('d-m-Y', strtotime($dateFromTable))
+                    "\n~ *TGL. Berobat(tgl-bln-thn)*: " . date('d-m-Y', strtotime($dateFromTable)));
 
-                // "Balas dengan angka 0 untuk kembali ke menu utama"
-            ];
         } else if (!isset($poli)) {
             $this->updateWaTable('questions', 'pilih poli');
             return $this->reply("Anda ingin berobat ke poli apa?\nBerikut nama poli yang tersedia:\n- " . $listPoli . "\n\nSilahkan balas dengan *nama poli* tujuan anda");
@@ -169,7 +166,7 @@ trait registrationTrait
             $store->save();
 
 
-            
+
             $storeTobookingtable = BookingRegistrasi::create(
                 [
                     'kontak'            => $this->getContact(),
@@ -193,14 +190,16 @@ trait registrationTrait
 
 
 
-            
+
 
             $regPeriksa             = RegPeriksa::select('no_rawat', 'tgl_registrasi', 'kd_dokter', 'no_reg', 'kd_poli', 'no_rkm_medis')->where('no_rkm_medis', $noRm)->where('tgl_registrasi', $dateFromTable)->where('kd_dokter', $kodeDokter)->where('kd_poli', $kodePoli)->first();
             $noAntrian = $regPeriksa->no_reg;
 
             $namaPasien = trim($pasien->nm_pasien, ' ');
 
-            $response = $this->replyMedia($this->getContact(), $linkQrCode,
+            $response = $this->replyMedia(
+                $this->getContact(),
+                $linkQrCode,
                 "Anda sudah terdaftar" .
                     "\n\n--Detail Pendaftaran--" .
                     "\nNama: *$namaPasien*" .

@@ -8,6 +8,7 @@ use app\Traits\poliTrait;
 use App\Traits\registrationTrait;
 use Illuminate\Support\Str;
 use App\Traits\keywordsTrait;
+// use Illuminate\Support\Facades\Config;
 
 trait responseTrait
 {
@@ -30,7 +31,7 @@ trait responseTrait
 
         $jadwalIntent       = $pregjadwal > 1 ? Str::of($this->senderMessage())->contains([$pregjadwal, 'jadwal']) : Str::of($this->senderMessage())->contains('jadwal');
         $formDaftar         = $this->senderMessage() == 'daftar';
-        $groupName          = $this->getGroup()['name'];
+        // $groupName          = $this->getGroup()['name'];
         $pilih0             = trim($this->senderMessage(), ' ') == "0";
         $pilih1             = trim($this->senderMessage(), ' ') == "1";
         $pilih2             = trim($this->senderMessage(), ' ') == "2";
@@ -39,18 +40,18 @@ trait responseTrait
         $tes                 = $this->senderMessage() == "tes" || $this->senderMessage() == "test";
         $thanks             = Str::of($this->senderMessage())->replace(["thx", 'terimakasih', 'terima kasih', 'makasi', 'trims', 'thank', 'thankyou', 'thank you', 'tq'], 'terima kasih');
 
-        // return $this->getTglBerobat();
-        // return $this->getNamaPasien();
+        // return $this->getBirthDate();
+        // return $this->getPoli();
 
         switch (true) {
 
             case $hi:
             case $tes:
-                return [$this->reply('Selamat datang di RS. Ali Sibroh Malisi.'), $this->mainMenu()];
+                return $this->multipleReply('WELCOME','MAIN_MENU');
                 break;
 
             case $thanks == "terima kasih":
-                return "Terimakasih Kembali";
+                return $this->reply('THANKS');
                 break;
 
             case $this->getWaTableData('questions') == "pilih poli":
@@ -86,16 +87,14 @@ trait responseTrait
             case $sayaMauDaftar:
             case $mauKePoli:
             case $regIntent2:
-                return [
-                    "Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli* \" \n\nContoh: jadwal poli anak.",
-                    "Jika sudah mengetahui jadwal dokter tujuan anda silahkan pilih:\n1.Pasien Lama\n2.Pasien Baru\n\nMohon balas dengan angka pilihan anda (1 atau 2)"
-                ];
+                return $this->multipleReply('TO_CHECK_SCH', 'IF_KNEW_SCH');
             case $pilih0:
                 return $this->mainMenu();
                 break;
             case $pilih1:
             case $formDaftar:
-                return ["Sebelum mendaftar kami sarankan untuk cek jadwal praktek dokter terlebih dahulu dengan ketik \" *jadwal <spasi> nama poli*" . "\n\nContoh: *jadwal poli anak*.", "Pendaftaran pasien lama silahkan *COPY PESAN INI* dan lengkapi form berikut:\n" . $this->formDaftar()];
+                // return $this->reply('TO_CHECK_SCH');
+                return $this->multipleReply('TO_CHECK_SCH', 'TO_REGISTERED_PATIENT', 'REG_FORMAT');
                 break;
             case $jadwalIntent:
                 return $this->replyJadwal();

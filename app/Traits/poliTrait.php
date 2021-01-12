@@ -33,10 +33,10 @@ trait poliTrait
         $keywordsSyaraf = $this->findKeywords(['syaraf', 'neurologi', 'SARAF', 'neurolog', 'sp.n', 'spn'], $message);
 
         //mencari keywords obgyn yang diketikan pasien
-        $keywordsObgyn  = $this->findKeywords(['kndungan', 'kandungan', 'obgin', 'obgyn', 'spog', 'sp.og', 'kndngn', 'obg'], $message);
+        $keywordsObgyn  = $this->findKeywords(['kndungan', 'kandungan', 'obgin', 'obgyn', 'spog', 'sp.og', 'kndngn', 'obg', 'kebidanan', 'kbidanan'], $message);
 
         //mencari keywords internis yang diketikan pasien
-        $keywordsPoliDalam  = $this->findKeywords(['internis', 'intrenis', 'intrns', 'penyakit dalam', 'pnykt dlm', 'pny dlm', 'p.dlm', 'sppd', 'poli dalam', 'polidalam', 'polidlm', 'poli dlm', 'spesialis dalam', 'dalam', 'dlm'], $message);
+        $keywordsPoliDalam  = $this->findKeywords(['internis', 'intrenis', 'intrns', 'interna', 'interni','penyakit dalam', 'pnykt dlm', 'pny dlm', 'p.dlm', 'sppd', 'poli dalam', 'polidalam', 'polidlm', 'poli dlm', 'spesialis dalam', 'dalam', 'dlm', 'int'], $message);
 
         //mencari keywords spesialis anak yang diketikan pasien
         $keywordsPoliAnak  =  $this->findKeywords(['spesialis anak', 'spa', 'sp.a', 'anak', 'poli Anak'], $message);
@@ -96,7 +96,7 @@ trait poliTrait
         $containsPoli = Str::of($this->senderMessage())->contains('poli');
         $containsJadwal = Str::of($this->senderMessage())->contains('jadwal');
 
-        $message = Str::of($this->senderMessage())->replaceMatches('/poli tujuan|poli yang dituju|poli yg dituju/', 'poli');
+        $message = Str::of($this->senderMessage())->replaceMatches('/poli tujuan|poli yang dituju|poli yg dituju|poli spesialis yg dituju|poli spesialis yang dituju|poli spesialis tujuan|spesialis yang dituju|spesialis yg dituju|spesialis tujuan/', 'poli');
 
 
         if($containsJadwal && $containsPoli){
